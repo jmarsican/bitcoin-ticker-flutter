@@ -1,5 +1,3 @@
-import 'dart:io' show Platform;
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +10,7 @@ class PriceScreen extends StatefulWidget {
 
 class _PriceScreenState extends State<PriceScreen> {
   String selectedItem;
+  String coinData = '?';
 
   DropdownButton<String> getDropDownButton() {
     List<DropdownMenuItem<String>> dropDownItems = [];
@@ -72,7 +71,7 @@ class _PriceScreenState extends State<PriceScreen> {
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
                 child: Text(
-                  '1 BTC = ? USD',
+                  '1 BTC = $coinData USD',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20.0,
@@ -87,10 +86,29 @@ class _PriceScreenState extends State<PriceScreen> {
             alignment: Alignment.center,
             padding: EdgeInsets.only(bottom: 30.0),
             color: Colors.lightBlue,
-            child: Platform.isIOS ? iOSPicker() : getDropDownButton(),
+            child: iOSPicker(),
           ),
         ],
       ),
     );
+  }
+
+  void setData() async {
+    try {
+      var data = await CoinData().getCoinData();
+
+      print(data);
+      setState(() {
+        coinData = data.toString();
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setData();
   }
 }

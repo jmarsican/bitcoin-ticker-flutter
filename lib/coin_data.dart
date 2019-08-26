@@ -1,3 +1,5 @@
+import 'networking.dart';
+
 const List<String> currenciesList = [
   'AUD',
   'BRL',
@@ -28,4 +30,13 @@ const List<String> cryptoList = [
   'LTC',
 ];
 
-class CoinData {}
+class CoinData {
+  Future<double> getCoinData() async {
+    final helper = NetworkHelper();
+
+    var decodeData =
+        await helper.getTickerData(cryptoList[0] + currenciesList[20]);
+
+    return decodeData['last'];
+  }
+}
