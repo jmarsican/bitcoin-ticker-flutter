@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'coin_data.dart';
+import 'currency_view.dart';
 
 class PriceScreen extends StatefulWidget {
   @override
@@ -12,7 +13,9 @@ class PriceScreen extends StatefulWidget {
 
 class _PriceScreenState extends State<PriceScreen> {
   String selectedCurrency;
-  String coinValue = '?';
+  String bitcoinValue = '?';
+  String litecoinValue = '?';
+  String ethereumValue = '?';
 
   DropdownButton<String> getDropDownButton() {
     List<DropdownMenuItem<String>> dropDownItems = [];
@@ -66,27 +69,18 @@ class _PriceScreenState extends State<PriceScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0),
-            child: Card(
-              color: Colors.lightBlueAccent,
-              elevation: 5.0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
-                child: Text(
-                  '1 BTC = $coinValue $selectedCurrency',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-          ),
+          CurrencyView(
+              cryptocurrency: 'BTC',
+              coinValue: bitcoinValue,
+              selectedCurrency: selectedCurrency),
+          CurrencyView(
+              cryptocurrency: 'ETH',
+              coinValue: ethereumValue,
+              selectedCurrency: selectedCurrency),
+          CurrencyView(
+              cryptocurrency: 'LTC',
+              coinValue: litecoinValue,
+              selectedCurrency: selectedCurrency),
           Container(
             height: 150.0,
             alignment: Alignment.center,
@@ -101,11 +95,15 @@ class _PriceScreenState extends State<PriceScreen> {
 
   void setData() async {
     try {
-      var data = await CoinData().getCoinData(selectedCurrency);
+      var bitcoinData = await CoinData().getBitcoinData(selectedCurrency);
+      var litecoinData = await CoinData().getBitcoinData(selectedCurrency);
+      var ethereumData = await CoinData().getBitcoinData(selectedCurrency);
 
-      print(data);
+      print(bitcoinData);
       setState(() {
-        coinValue = data.toString();
+        bitcoinValue = bitcoinData.toString();
+        litecoinValue = litecoinData.toStringAsFixed(0);
+        ethereumValue = ethereumData.toStringAsFixed(0);
       });
     } catch (e) {
       print(e);

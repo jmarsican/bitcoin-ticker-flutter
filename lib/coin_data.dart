@@ -31,11 +31,29 @@ const List<String> cryptoList = [
 ];
 
 class CoinData {
-  Future<double> getCoinData(String selectedCurrency) async {
+  Future<double> getBitcoinData(String selectedCurrency) async {
     final helper = NetworkHelper();
 
     var decodeData =
         await helper.getTickerData(cryptoList[0] + selectedCurrency);
+
+    return decodeData['last'];
+  }
+
+  Future<double> getLitecoinData(String selectedCurrency) async {
+    final helper = NetworkHelper();
+
+    var decodeData =
+        await helper.getTickerData(cryptoList[2] + selectedCurrency);
+
+    return decodeData['last'];
+  }
+
+  Future<double> getEthereumnData(String selectedCurrency) async {
+    final helper = NetworkHelper();
+
+    var decodeData =
+        await helper.getTickerData(cryptoList[1] + selectedCurrency);
 
     return decodeData['last'];
   }
