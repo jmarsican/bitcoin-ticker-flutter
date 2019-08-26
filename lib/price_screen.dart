@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -9,8 +11,8 @@ class PriceScreen extends StatefulWidget {
 }
 
 class _PriceScreenState extends State<PriceScreen> {
-  String selectedItem;
-  String coinData = '?';
+  String selectedCurrency;
+  String coinValue = '?';
 
   DropdownButton<String> getDropDownButton() {
     List<DropdownMenuItem<String>> dropDownItems = [];
@@ -25,11 +27,12 @@ class _PriceScreenState extends State<PriceScreen> {
     }
 
     return DropdownButton<String>(
-        value: selectedItem,
+        value: selectedCurrency,
         items: dropDownItems,
         onChanged: (value) {
           setState(() {
-            selectedItem = value;
+            selectedCurrency = value;
+            setData();
           });
         });
   }
@@ -45,7 +48,10 @@ class _PriceScreenState extends State<PriceScreen> {
         backgroundColor: Colors.lightBlue,
         itemExtent: 32.0,
         onSelectedItemChanged: (index) {
-          selectedItem = currenciesList[index];
+          setState(() {
+            selectedCurrency = currenciesList[index];
+            setData();
+          });
         },
         children: items);
   }
@@ -71,7 +77,7 @@ class _PriceScreenState extends State<PriceScreen> {
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
                 child: Text(
-                  '1 BTC = $coinData USD',
+                  '1 BTC = $coinValue $selectedCurrency',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20.0,
@@ -86,7 +92,7 @@ class _PriceScreenState extends State<PriceScreen> {
             alignment: Alignment.center,
             padding: EdgeInsets.only(bottom: 30.0),
             color: Colors.lightBlue,
-            child: iOSPicker(),
+            child: Platform.isIOS ? iOSPicker() : getDropDownButton(),
           ),
         ],
       ),
@@ -95,11 +101,11 @@ class _PriceScreenState extends State<PriceScreen> {
 
   void setData() async {
     try {
-      var data = await CoinData().getCoinData();
+      var data = await CoinData().getCoinData(selectedCurrency);
 
       print(data);
       setState(() {
-        coinData = data.toString();
+        coinValue = data.toString();
       });
     } catch (e) {
       print(e);
